@@ -1,0 +1,170 @@
+<div class="container my-4" style="max-width: 780px">
+  <h2 class="mb-1">Registro en la plataforma</h2>
+  <p class="text-muted mb-4">Completa el formulario para inscribirte en nuestros cursos de programación.</p>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+
+    <div class="card mb-4" formGroupName="personal">
+      <div class="card-header fw-semibold">1. Datos personales</div>
+      <div class="card-body row g-3">
+
+        <div class="col-md-6">
+          <label for="firstName" class="form-label">Nombre</label>
+          <input id="firstName" type="text" formControlName="firstName" class="form-control"
+                 [class.is-invalid]="showError(personal.firstName)" [class.is-valid]="showValid(personal.firstName)" />
+          @if (showError(personal.firstName)) {
+            <div class="invalid-feedback">
+              @if (personal.firstName.errors?.['required']) { El nombre es obligatorio }
+              @else if (personal.firstName.errors?.['minlength']) { Mínimo 2 caracteres }
+              @else if (personal.firstName.errors?.['maxlength']) { Máximo 30 caracteres }
+              @else if (personal.firstName.errors?.['pattern']) { Solo se permiten letras }
+            </div>
+          }
+        </div>
+
+        <div class="col-md-6">
+          <label for="lastName" class="form-label">Apellidos</label>
+          <input id="lastName" type="text" formControlName="lastName" class="form-control"
+                 [class.is-invalid]="showError(personal.lastName)" [class.is-valid]="showValid(personal.lastName)" />
+          @if (showError(personal.lastName)) {
+            <div class="invalid-feedback">
+              @if (personal.lastName.errors?.['required']) { Los apellidos son obligatorios }
+              @else if (personal.lastName.errors?.['minlength']) { Mínimo 2 caracteres }
+              @else if (personal.lastName.errors?.['maxlength']) { Máximo 50 caracteres }
+              @else if (personal.lastName.errors?.['pattern']) { Solo se permiten letras }
+            </div>
+          }
+        </div>
+
+        <div class="col-md-6">
+          <label for="documentId" class="form-label">DNI / NIE</label>
+          <input id="documentId" type="text" formControlName="documentId" class="form-control"
+                 placeholder="12345678Z o X1234567L"
+                 [class.is-invalid]="showError(personal.documentId)" [class.is-valid]="showValid(personal.documentId)" />
+          @if (showError(personal.documentId)) {
+            <div class="invalid-feedback">
+              @if (personal.documentId.errors?.['required']) { El DNI/NIE es obligatorio }
+              @else if (personal.documentId.errors?.['pattern']) { Formato no válido }
+              @else if (personal.documentId.errors?.['dniLetter']) { La letra no corresponde al número }
+            </div>
+          }
+        </div>
+
+        <div class="col-md-6">
+          <label for="phone" class="form-label">Teléfono móvil</label>
+          <input id="phone" type="tel" formControlName="phone" class="form-control"
+                 placeholder="+34612345678"
+                 [class.is-invalid]="showError(personal.phone)" [class.is-valid]="showValid(personal.phone)" />
+          @if (showError(personal.phone)) {
+            <div class="invalid-feedback">Introduce un móvil español válido</div>
+          }
+        </div>
+
+      </div>
+    </div>
+
+    <div class="card mb-4" formGroupName="account">
+      <div class="card-header fw-semibold">2. Datos de la cuenta</div>
+      <div class="card-body row g-3">
+
+        <div class="col-md-6">
+          <label for="username" class="form-label">Nombre de usuario</label>
+          <input id="username" type="text" formControlName="username" class="form-control"
+                 [class.is-invalid]="showError(account.username)" [class.is-valid]="showValid(account.username)" />
+          @if (showError(account.username)) {
+            <div class="invalid-feedback">
+              @if (account.username.errors?.['required']) { El nombre de usuario es obligatorio }
+              @else if (account.username.errors?.['minlength'] || account.username.errors?.['maxlength']) { Entre 4 y 15 caracteres }
+              @else if (account.username.errors?.['pattern']) { Debe empezar por letra y no contener espacios ni símbolos }
+            </div>
+          }
+        </div>
+
+        <div class="col-md-6">
+          <label for="email" class="form-label">Email</label>
+          <input id="email" type="email" formControlName="email" class="form-control"
+                 [class.is-invalid]="showError(account.email)" [class.is-valid]="showValid(account.email)" />
+          @if (showError(account.email)) {
+            <div class="invalid-feedback">
+              @if (account.email.errors?.['required']) { El email es obligatorio }
+              @else if (account.email.errors?.['email']) { Formato de email no válido }
+            </div>
+          }
+        </div>
+
+        <div class="col-12">
+          <label for="password" class="form-label">Contraseña</label>
+          <input id="password" type="password" formControlName="password" class="form-control"
+                 [class.is-invalid]="showError(account.password)" [class.is-valid]="showValid(account.password)" />
+          @if (showError(account.password)) {
+            <ul class="invalid-feedback d-block ps-3 mb-0">
+              @for (message of passwordErrors(); track message) {
+                <li>{{ message }}</li>
+              }
+            </ul>
+          }
+        </div>
+
+      </div>
+    </div>
+
+    <div class="card mb-4" formGroupName="course">
+      <div class="card-header fw-semibold">3. Preferencias del curso</div>
+      <div class="card-body row g-3">
+
+        <div class="col-md-12">
+          <label for="selectedCourse" class="form-label">Curso de interés</label>
+          <select id="selectedCourse" formControlName="selectedCourse" class="form-select"
+                  [class.is-invalid]="showError(course.selectedCourse)" [class.is-valid]="showValid(course.selectedCourse)">
+            <option value="" disabled>Selecciona un curso…</option>
+            @for (c of courses; track c) {
+              <option [value]="c">{{ c }}</option>
+            }
+          </select>
+          @if (showError(course.selectedCourse)) {
+            <div class="invalid-feedback">Selecciona un curso</div>
+          }
+        </div>
+
+        <div class="col-md-6">
+          <label for="weeklyHours" class="form-label">Horas disponibles a la semana</label>
+          <input id="weeklyHours" type="number" formControlName="weeklyHours" class="form-control"
+                 [class.is-invalid]="showError(course.weeklyHours)" [class.is-valid]="showValid(course.weeklyHours)" />
+          @if (showError(course.weeklyHours)) {
+            <div class="invalid-feedback">Entre 2 y 40 horas</div>
+          }
+        </div>
+
+        <div class="col-md-6">
+          <label for="postalCode" class="form-label">Código postal</label>
+          <input id="postalCode" type="text" formControlName="postalCode" class="form-control"
+                 placeholder="28001"
+                 [class.is-invalid]="showError(course.postalCode)" [class.is-valid]="showValid(course.postalCode)" />
+          @if (showError(course.postalCode)) {
+            <div class="invalid-feedback">Código postal no válido</div>
+          }
+        </div>
+
+      </div>
+    </div>
+
+    <div class="form-check mb-4">
+      <input id="terms" type="checkbox" formControlName="terms" class="form-check-input"
+             [class.is-invalid]="showError(terms)" />
+      <label for="terms" class="form-check-label">Acepto los términos y condiciones</label>
+      @if (showError(terms)) {
+        <div class="invalid-feedback d-block">Debes aceptar los términos y condiciones</div>
+      }
+    </div>
+
+    <div class="d-flex gap-2">
+      <button type="submit" class="btn btn-primary">Registrarme</button>
+      <button type="button" class="btn btn-outline-secondary" (click)="onReset()">Limpiar</button>
+    </div>
+  </form>
+
+  @if (submittedData) {
+    <div class="alert alert-success mt-4 mb-2">Registro completado correctamente.</div>
+    <pre class="p-3 bg-white border rounded">{{ submittedData | json }}</pre>
+  }
+</div>
